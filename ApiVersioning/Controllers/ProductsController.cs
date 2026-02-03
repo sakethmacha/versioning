@@ -1,55 +1,39 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ApiVersioning.Dtos;
-using ApiVersioning.Models;
+﻿using ApiVersioning.Dtos;
+using ApiVersioning.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 namespace ApiVersioning.Controllers
 {
     [ApiController]
-    [Route("api/products")]
+    [ApiVersion("1.0")]
+    [Route("api/v1/products")]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<List<ProductDto>> Get(
-            [FromQuery] ProductFilterQuery filter)
+        
+        private readonly IProductService _productService;
+
+        public ProductsController(IProductService productService)
         {
-            var products = new List<Product>
+            _productService = productService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request)
         {
-            new() { Id = 1, Name = "Book", Price = 200, Category = "Education" },
-            new() { Id = 2, Name = "Pen", Price = 20, Category = "Stationery" },
-            new() { Id = 3, Name = "Laptop", Price = 50000, Category = "Electronics" },
-            new() { Id = 4, Name = "Notebook", Price = 100, Category = "Stationery" }
-        };
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            // FILTERING
-            if (!string.IsNullOrWhiteSpace(filter.Name))
-                products = products
-                    .Where(p => p.Name.Contains(filter.Name,
-                        StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-
-            if (filter.MinPrice.HasValue)
-                products = products
-                    .Where(p => p.Price >= filter.MinPrice.Value)
-                    .ToList();
-
-            if (filter.MaxPrice.HasValue)
-                products = products
-                    .Where(p => p.Price <= filter.MaxPrice.Value)
-                    .ToList();
-
-            if (!string.IsNullOrWhiteSpace(filter.Category))
-                products = products
-                    .Where(p => p.Category == filter.Category)
-                    .ToList();
-
-            var result = products.Select(p => new ProductDto
-            {
-                Name = p.Name,
-                Price = p.Price,
-                Category = p.Category
-            }).ToList();
-
+            var result = await _productService.CreateProductAsync(request);
             return Ok(result);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProduct(int id)
+        {
+            var product = await _productService.GetProductByIdAsync(id);
+            if (product == null)
+                return NotFound();
+
+            return Ok(product);
+        }
     }
 }
