@@ -44,13 +44,14 @@ namespace ApiVersioning.Endpoints
                     Description = "High-performance gaming laptop with RTX 4090",
                     Price = 2499.99m,
                     CategoryId = 1,
-                    Tags = new List<string> { "electronics", "gaming", "laptop" }
+                    Tags = "electronics,gaming,laptop"
                 };
             });
 
+
             // Versioning
             //Options(x => x.WithVersionSet("v2"));
-         
+
 
             // Throttling
             Throttle(hitLimit: 10, durationSeconds: 60, headerName: "X-Rate-Limit");
@@ -78,7 +79,8 @@ namespace ApiVersioning.Endpoints
                     CategoryName = product.Category?.Name ?? "Unknown",
                     Tags = product.Tags,
                     CreatedAt = product.CreatedAt,
-                    CreatedBy = HttpContext.Items["UserId"]?.ToString() ?? "System"
+                    CreatedBy = HttpContext.Items["UserId"]?.ToString() ?? "System",
+                    IsDeleted = product.IsDeleted
                 };
 
                 _logger.LogInformation("Product created successfully: {ProductId}", response.Id);

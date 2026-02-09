@@ -24,10 +24,7 @@ namespace ApiVersioning.Validations
             RuleFor(x => x.CategoryId)
                 .GreaterThan(0).WithMessage("Valid category must be selected");
 
-            RuleFor(x => x.Tags)
-                .NotNull().WithMessage("Tags cannot be null")
-                .Must(tags => tags.Count >= 1).WithMessage("At least one tag is required")
-                .Must(tags => tags.Count <= 10).WithMessage("Cannot have more than 10 tags");
+            
         }
     }
 }

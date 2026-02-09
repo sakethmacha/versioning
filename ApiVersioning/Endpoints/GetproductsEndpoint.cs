@@ -24,9 +24,6 @@ namespace ApiVersioning.Endpoints
             // Validation
             Validator<GetProductValidator>();
 
-            // Postprocessor for caching
-            //PostProcessor<CachingPostProcessor>();
-
             Description(b => b
                 .Produces<ProductResponse>(200)
                 .ProducesProblemDetails(404));
@@ -61,7 +58,8 @@ namespace ApiVersioning.Endpoints
                     CategoryName = product.Category?.Name ?? "Unknown",
                     Tags = product.Tags,
                     CreatedAt = product.CreatedAt,
-                    CreatedBy = product.CreatedBy
+                    CreatedBy = product.CreatedBy,
+                    IsDeleted = product.IsDeleted
                 };
 
                 await SendAsync(response, 200, ct);

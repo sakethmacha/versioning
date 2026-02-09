@@ -31,7 +31,10 @@ namespace ApiVersioning.Services
                 Description = request.Description,
                 Price = request.Price,
                 Category = category,
-                Tags = request.Tags ?? new List<string>(),
+                Tags = string.IsNullOrWhiteSpace(request.Tags)
+            ? null
+            : request.Tags,
+                IsDeleted = false,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = "system"
             };

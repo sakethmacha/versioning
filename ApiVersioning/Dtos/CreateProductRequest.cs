@@ -10,6 +10,8 @@ namespace ApiVersioning.Dtos
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int CategoryId { get; set; }
-        public List<string> Tags { get; set; }
+        public string Tags { get; set; }
+
+        public bool IsDeleted { get; set; }=false;
     }
 }
