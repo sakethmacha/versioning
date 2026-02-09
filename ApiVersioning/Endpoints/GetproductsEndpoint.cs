@@ -59,7 +59,7 @@ namespace ApiVersioning.Endpoints
                     Tags = product.Tags,
                     CreatedAt = product.CreatedAt,
                     CreatedBy = product.CreatedBy,
-                    IsDeleted = product.IsDeleted
+                    IsActive = product.IsActive
                 };
 
                 await SendAsync(response, 200, ct);

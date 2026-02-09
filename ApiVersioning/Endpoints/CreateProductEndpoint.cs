@@ -80,7 +80,7 @@ namespace ApiVersioning.Endpoints
                     Tags = product.Tags,
                     CreatedAt = product.CreatedAt,
                     CreatedBy = HttpContext.Items["UserId"]?.ToString() ?? "System",
-                    IsDeleted = product.IsDeleted
+                    IsActive = product.IsActive
                 };
 
                 _logger.LogInformation("Product created successfully: {ProductId}", response.Id);

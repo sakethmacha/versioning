@@ -12,6 +12,6 @@ namespace ApiVersioning.Dtos
         public int CategoryId { get; set; }
         public string Tags { get; set; }
 
-        public bool IsDeleted { get; set; }=false;
+        public bool IsActive { get; set; }
     }
 }

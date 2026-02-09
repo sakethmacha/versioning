@@ -34,7 +34,7 @@ namespace ApiVersioning.Services
                 Tags = string.IsNullOrWhiteSpace(request.Tags)
             ? null
             : request.Tags,
-                IsDeleted = false,
+                IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = "system"
             };
