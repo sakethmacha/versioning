@@ -111,20 +111,18 @@ namespace ApiVersioning
                 });
             });
 
-            // -------------------- FastEndpoints (V2) --------------------
-            builder.Services.AddFastEndpoints();
-
-            // Swagger for FastEndpoints (v2) - USE SwaggerDocument() not AddSwaggerDocument()
-            builder.Services.SwaggerDocument(o =>
-            {
-                o.DocumentSettings = s =>
+           
+            // In services configuration
+            builder.Services.AddFastEndpoints()
+                .AddSwaggerDocument(o =>
                 {
-                    s.Title = "My API v2 (FastEndpoints)";
-                    s.Version = "v2";
-                    s.DocumentName = "v2";
-                };
-            });
+                    o.Title = "My API v2 (FastEndpoints)";
+                    o.Version = "v2";
+                    o.DocumentName = "v2";
+                });
 
+            // In middleware
+           
             // -------------------- DB --------------------
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Constr")));
@@ -141,7 +139,11 @@ namespace ApiVersioning
             });
 
             var app = builder.Build();
-
+            app.UseOpenApi(); // Generates the OpenAPI JSON
+            app.UseSwaggerUi(c =>
+            {
+                c.ConfigureDefaults(); // For FastEndpoints v2
+            });
             // -------------------- Middleware Order (IMPORTANT) --------------------
             app.UseHttpsRedirection();
             app.UseAuthorization();
