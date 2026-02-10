@@ -136,22 +136,6 @@ namespace ApiVersioning
                 c.Versioning.Prefix = "api/v";
                 c.Versioning.PrependToRoute = true;
             });
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var services = scope.ServiceProvider;
-
-            //    try
-            //    {
-            //        var dbContext = services.GetRequiredService<AppDbContext>();
-            //        dbContext.Database.Migrate();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        var logger = services.GetRequiredService<ILogger<Program>>();
-            //        logger.LogError(ex, "An error occurred while migrating the database.");
-            //        throw; // Fail fast if migration fails
-            //    }
-            //}
 
             // FastEndpoints Swagger (NOT SwaggerGen)
             app.UseOpenApi();
