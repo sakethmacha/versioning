@@ -18,10 +18,11 @@ namespace ApiVersioning.Endpoints
 
         public override void Configure()
         {
-            Get("/api/v2/product/{id}");
+            Get("/products/{id}"); // Simplified route
+            Version(2);
             AllowAnonymous();
-            Tags("Product");
-            // Validation
+            Tags("Products");
+
             Validator<GetProductValidator>();
 
             Description(b => b

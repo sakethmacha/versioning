@@ -17,22 +17,17 @@ namespace ApiVersioning.Endpoints
 
         public override void Configure()
         {
-            Post("/product");
+            Post("/products"); // Simplified route
             Version(2);
-            Tags("Product");
-            // Authentication & Authorization
-            AllowAnonymous(); // Change to: Roles("Admin", "User") for role-based auth
+            Tags("Products");
+            AllowAnonymous();
 
-            // Validation
             Validator<CreateProductValidator>();
 
-            // API Documentation
             Description(b => b
                 .Accepts<CreateProductRequest>("application/json")
                 .Produces<ProductResponse>(200, "application/json")
-                .ProducesProblemDetails(400, "application/problem+json")
-                .ProducesProblemDetails(401, "application/problem+json")
-                .ProducesProblemDetails(429, "application/problem+json"));
+                .ProducesProblemDetails(400));
 
             Summary(s =>
             {
@@ -48,13 +43,7 @@ namespace ApiVersioning.Endpoints
                 };
             });
 
-
-            // Versioning
-            //Options(x => x.WithVersionSet("v2"));
-
-
-            // Throttling
-            Throttle(hitLimit: 10, durationSeconds: 60, headerName: "X-Rate-Limit");
+            Throttle(hitLimit: 10, durationSeconds: 60);
         }
 
         public override async Task HandleAsync(CreateProductRequest req, CancellationToken ct)
