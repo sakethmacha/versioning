@@ -1,11 +1,12 @@
-﻿using ApiVersioning.Interfaces;
+﻿using ApiVersioning.DbContexts;
+using ApiVersioning.Interfaces;
 using ApiVersioning.Services;
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using ApiVersioning.DbContexts;
 namespace ApiVersioning
 {
     public class Program
@@ -94,59 +95,7 @@ namespace ApiVersioning
 
             //app.MapControllers();
             //app.Run();
-            //var builder = WebApplication.CreateBuilder(args);
-
-            ////// Controllers (V1)
-            //builder.Services.AddControllers();
-
-            //// FastEndpoints (V2)
-            //builder.Services.AddFastEndpoints();
-
-
-
-            //// FastEndpoints Swagger
-            //builder.Services.AddSwaggerDocument(o =>
-            //{
-            //    o.Title = "My API v2";
-            //    o.Version = "v2";
-            //    o.DocumentName = "v2";
-            //});
-
-
-            //// DB
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //    options.UseSqlServer(builder.Configuration.GetConnectionString("Constr")));
-
-            //// Services
-            //builder.Services.AddScoped<IProductService, ProductService>();
-
-            //// MVC API Versioning (ONLY for controllers)
-            //builder.Services.AddApiVersioning(options =>
-            //{
-            //    options.DefaultApiVersion = new ApiVersion(1, 0);
-            //    options.AssumeDefaultVersionWhenUnspecified = true;
-            //    options.ReportApiVersions = true;
-            //});
-
-            //var app = builder.Build();
-
-            //// FastEndpoints routing & versioning
-            //app.UseFastEndpoints(c =>
-            //{
-            //    c.Versioning.Prefix = "api/v";
-            //    c.Versioning.PrependToRoute = true;
-            //});
-
-            //// FastEndpoints Swagger (NOT SwaggerGen)
-            //app.UseOpenApi();
-            //app.UseSwaggerUI(c =>
-            //{
-            //    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1 (Controllers)");
-            //    c.SwaggerEndpoint("/swagger/v2/swagger.json", "API V2 (FastEndpoints)");
-            //});
-
-            //app.MapControllers();
-            //app.Run();
+           
             var builder = WebApplication.CreateBuilder(args);
 
             // -------------------- Controllers (V1) --------------------
@@ -165,12 +114,15 @@ namespace ApiVersioning
             // -------------------- FastEndpoints (V2) --------------------
             builder.Services.AddFastEndpoints();
 
-            // Swagger for FastEndpoints (v2)
-            builder.Services.AddSwaggerDocument(o =>
+            // Swagger for FastEndpoints (v2) - USE SwaggerDocument() not AddSwaggerDocument()
+            builder.Services.SwaggerDocument(o =>
             {
-                o.Title = "My API v2 (FastEndpoints)";
-                o.Version = "v2";
-                o.DocumentName = "v2";
+                o.DocumentSettings = s =>
+                {
+                    s.Title = "My API v2 (FastEndpoints)";
+                    s.Version = "v2";
+                    s.DocumentName = "v2";
+                };
             });
 
             // -------------------- DB --------------------
@@ -190,6 +142,10 @@ namespace ApiVersioning
 
             var app = builder.Build();
 
+            // -------------------- Middleware Order (IMPORTANT) --------------------
+            app.UseHttpsRedirection();
+            app.UseAuthorization();
+
             // -------------------- FastEndpoints --------------------
             app.UseFastEndpoints(c =>
             {
@@ -198,8 +154,7 @@ namespace ApiVersioning
             });
 
             // -------------------- Swagger --------------------
-            app.UseSwagger();      // Controllers
-            app.UseOpenApi();      // FastEndpoints
+            app.UseSwagger();      // For both Controllers and FastEndpoints
 
             app.UseSwaggerUI(c =>
             {
