@@ -94,33 +94,93 @@ namespace ApiVersioning
 
             //app.MapControllers();
             //app.Run();
+            //var builder = WebApplication.CreateBuilder(args);
+
+            ////// Controllers (V1)
+            //builder.Services.AddControllers();
+
+            //// FastEndpoints (V2)
+            //builder.Services.AddFastEndpoints();
+
+
+
+            //// FastEndpoints Swagger
+            //builder.Services.AddSwaggerDocument(o =>
+            //{
+            //    o.Title = "My API v2";
+            //    o.Version = "v2";
+            //    o.DocumentName = "v2";
+            //});
+
+
+            //// DB
+            //builder.Services.AddDbContext<AppDbContext>(options =>
+            //    options.UseSqlServer(builder.Configuration.GetConnectionString("Constr")));
+
+            //// Services
+            //builder.Services.AddScoped<IProductService, ProductService>();
+
+            //// MVC API Versioning (ONLY for controllers)
+            //builder.Services.AddApiVersioning(options =>
+            //{
+            //    options.DefaultApiVersion = new ApiVersion(1, 0);
+            //    options.AssumeDefaultVersionWhenUnspecified = true;
+            //    options.ReportApiVersions = true;
+            //});
+
+            //var app = builder.Build();
+
+            //// FastEndpoints routing & versioning
+            //app.UseFastEndpoints(c =>
+            //{
+            //    c.Versioning.Prefix = "api/v";
+            //    c.Versioning.PrependToRoute = true;
+            //});
+
+            //// FastEndpoints Swagger (NOT SwaggerGen)
+            //app.UseOpenApi();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1 (Controllers)");
+            //    c.SwaggerEndpoint("/swagger/v2/swagger.json", "API V2 (FastEndpoints)");
+            //});
+
+            //app.MapControllers();
+            //app.Run();
             var builder = WebApplication.CreateBuilder(args);
 
-            //// Controllers (V1)
+            // -------------------- Controllers (V1) --------------------
             builder.Services.AddControllers();
 
-            // FastEndpoints (V2)
+            // Swagger for Controllers (v1)
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "My API v1 (Controllers)",
+                    Version = "v1"
+                });
+            });
+
+            // -------------------- FastEndpoints (V2) --------------------
             builder.Services.AddFastEndpoints();
 
-
-
-            // FastEndpoints Swagger
+            // Swagger for FastEndpoints (v2)
             builder.Services.AddSwaggerDocument(o =>
             {
-                o.Title = "My API v2";
+                o.Title = "My API v2 (FastEndpoints)";
                 o.Version = "v2";
                 o.DocumentName = "v2";
             });
 
-
-            // DB
+            // -------------------- DB --------------------
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Constr")));
 
-            // Services
+            // -------------------- Services --------------------
             builder.Services.AddScoped<IProductService, ProductService>();
 
-            // MVC API Versioning (ONLY for controllers)
+            // -------------------- API Versioning (Controllers only) --------------------
             builder.Services.AddApiVersioning(options =>
             {
                 options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -130,23 +190,28 @@ namespace ApiVersioning
 
             var app = builder.Build();
 
-            // FastEndpoints routing & versioning
+            // -------------------- FastEndpoints --------------------
             app.UseFastEndpoints(c =>
             {
                 c.Versioning.Prefix = "api/v";
                 c.Versioning.PrependToRoute = true;
             });
 
-            // FastEndpoints Swagger (NOT SwaggerGen)
-            app.UseOpenApi();
+            // -------------------- Swagger --------------------
+            app.UseSwagger();      // Controllers
+            app.UseOpenApi();      // FastEndpoints
+
             app.UseSwaggerUI(c =>
             {
-                //c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1 (Controllers)");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1 (Controllers)");
                 c.SwaggerEndpoint("/swagger/v2/swagger.json", "API V2 (FastEndpoints)");
             });
 
+            // -------------------- Controllers --------------------
             app.MapControllers();
+
             app.Run();
+
         }
     }
 }
