@@ -70,7 +70,8 @@ namespace ApiVersioning
             });
 
             // -------------------- Swagger UI --------------------
-            
+          
+                // Swashbuckle Swagger for Controllers (v1)
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
@@ -78,11 +79,11 @@ namespace ApiVersioning
 
                 });
             
+
             // -------------------- Controllers --------------------
             app.MapControllers();
 
             app.Run();
-
         }
     }
 }
