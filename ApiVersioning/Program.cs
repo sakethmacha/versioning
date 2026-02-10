@@ -70,17 +70,14 @@ namespace ApiVersioning
             });
 
             // -------------------- Swagger UI --------------------
-            if (app.Environment.IsDevelopment())
-            {
-                // Swashbuckle Swagger for Controllers (v1)
+            
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
 
                 });
-            }
-
+            
             // -------------------- Controllers --------------------
             app.MapControllers();
 
