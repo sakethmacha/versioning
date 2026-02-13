@@ -21,6 +21,9 @@ namespace ApiVersioning
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Constr")));
 
+            var conn = builder.Configuration.GetConnectionString("Constr");
+            Console.WriteLine("CONNECTION STRING = " + conn);
+
             // -------------------- Services --------------------
             builder.Services.AddScoped<IProductService, ProductService>();
 
