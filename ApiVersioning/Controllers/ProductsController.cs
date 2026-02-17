@@ -9,11 +9,11 @@ namespace ApiVersioning.Controllers
     public class ProductsController : ControllerBase
     {
         
-        private readonly IProductService _productService;
+        private readonly IProductService ProductService;
 
         public ProductsController(IProductService productService)
         {
-            _productService = productService;
+            ProductService = productService;
         }
 
         [HttpPost]
@@ -22,14 +22,14 @@ namespace ApiVersioning.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _productService.CreateProductAsync(request);
+            var result = await ProductService.CreateProductAsync(request);
             return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
-            var product = await _productService.GetProductByIdAsync(id);
+            var product = await ProductService.GetProductByIdAsync(id);
             if (product == null)
                 return NotFound();
 

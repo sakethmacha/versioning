@@ -7,18 +7,18 @@ namespace ApiVersioning.Services
 {
     public class ProductService : IProductService
     {
-        private readonly AppDbContext _db;
+        private readonly AppDbContext DbContext;
 
         public ProductService(AppDbContext db)
         {
-            _db = db;
+            DbContext = db;
         }
 
         public async Task<Product> CreateProductAsync(
             CreateProductRequest request)
         {
             // Optional: validate category exists
-            var category = await _db.Categories
+            var category = await DbContext.Categories
                 .FirstOrDefaultAsync(c => c.Id == request.CategoryId);
 
             if (category == null)
@@ -39,15 +39,15 @@ namespace ApiVersioning.Services
                 CreatedBy = "system"
             };
 
-            _db.Products.Add(product);
-            await _db.SaveChangesAsync();
+            DbContext.Products.Add(product);
+            await DbContext.SaveChangesAsync();
 
             return product;
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            var product = await _db.Products
+            var product = await DbContext.Products
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
